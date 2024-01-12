@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  app:
+    platform: "linux/amd64"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_CLIENTVAR: "clientvar"
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    image: t3-app
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/postgres
+      - NEXT_PUBLIC_OPEN_API_URL=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
+      - OPEN_API_KEY=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
+      - PORT=3000
+      - NODE_ENV=production
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+volumes:
+  postgres_data:

@@ -5,16 +5,18 @@ generator client {
     provider = "prisma-client-js"
 }
 
+//postgres
 datasource db {
-    provider = "sqlite"
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
 model Post {
     id        Int      @id @default(autoincrement())
-    name      String
+    question  String
+    content   String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@index([name])
+    @@index([id])
 }

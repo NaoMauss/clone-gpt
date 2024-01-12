@@ -21,22 +21,17 @@ const generateAnswersSchema = z.object({
 export const openaiRouter = createTRPCRouter({
     generateAnswers: publicProcedure
         .input(generateAnswersSchema)
-        .mutation(async ({ input }) => {
+        .mutation(async ({ ctx, input }) => {
             const { question, messages, model } = input;
             const openai = new OpenAI({ apiKey: OPEN_API_KEY});
-            const prompt = `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.`;
 
             const answers = await openai.chat.completions.create({
                 messages,
                 model
             });
 
-            return answers.choices[0]?.message;
-        }),
+            if (answers.choices[0] === undefined) throw new Error('No answer generated');
 
-    helloWorld: publicProcedure
-        .input(z.string())
-        .query(async ({ input }) => {
-            return `Hello ${input}`;
+            return answers.choices[0]?.message;
         }),
 });
